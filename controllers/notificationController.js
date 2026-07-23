@@ -1,6 +1,6 @@
 import Notification from "../models/notificationModel.js";
 import asyncHandler from "../middleware/asyncHandler.js";
-import ApiError from "../utils/apiError.js";
+import ApiError from "../utils/ApiError.js";
 
 // Get Notifications
 export const getNotifications = asyncHandler(async (req, res) => {
