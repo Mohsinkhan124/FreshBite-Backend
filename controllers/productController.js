@@ -215,26 +215,55 @@ export const getSingleProduct = async (req, res) => {
 // Update Product
 export const updateProduct = async (req, res) => {
   try {
-    const product = await Product.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const product = await Product.findById(req.params.id);
 
     if (!product) {
       throw new ApiError(404, "Product not found");
     }
+
+    const {
+      name,
+      description,
+      price,
+      category,
+      stock,
+      featured,
+    } = req.body;
+
+    // Agar nayi image upload hui hai
+    if (req.file) {
+      const result = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: "FreshBite/Products" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+
+        streamifier.createReadStream(req.file.buffer).pipe(stream);
+      });
+
+      product.image = result.secure_url;
+    }
+
+    if (name !== undefined) product.name = name;
+    if (description !== undefined) product.description = description;
+    if (price !== undefined) product.price = price;
+    if (category !== undefined) product.category = category;
+    if (stock !== undefined) product.stock = stock;
+    if (featured !== undefined) product.featured = featured;
+
+    await product.save();
 
     res.status(200).json({
       success: true,
       message: "Product updated successfully",
       product,
     });
-
   } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
+    if (error instanceof ApiError) throw error;
+
     throw new ApiError(500, error.message || "Internal Server Error");
   }
 };
