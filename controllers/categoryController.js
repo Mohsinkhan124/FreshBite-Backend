@@ -99,9 +99,29 @@ export const getSingleCategory = async (req, res) => {
 // Update Category
 export const updateCategory = async (req, res) => {
   try {
+    const updateData = {
+      name: req.body.name,
+    };
+
+    if (req.file) {
+      const result = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: "FreshBite/Categories" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+
+        streamifier.createReadStream(req.file.buffer).pipe(stream);
+      });
+
+      updateData.image = result.secure_url;
+    }
+
     const category = await Category.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true }
     );
 
