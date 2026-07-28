@@ -13,6 +13,7 @@ export const createProduct = async (req, res) => {
       price,
       category,
       stock,
+      unit,
       featured,
     } = req.body;
 
@@ -50,6 +51,7 @@ export const createProduct = async (req, res) => {
       price,
       category,
       stock,
+      unit,
       featured,
       image,
     });
@@ -227,6 +229,7 @@ export const updateProduct = async (req, res) => {
       price,
       category,
       stock,
+      unit,
       featured,
     } = req.body;
 
@@ -252,6 +255,7 @@ export const updateProduct = async (req, res) => {
     if (price !== undefined) product.price = price;
     if (category !== undefined) product.category = category;
     if (stock !== undefined) product.stock = stock;
+    if (unit !== undefined) product.unit = unit;
     if (featured !== undefined) product.featured = featured;
 
     await product.save();
