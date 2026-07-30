@@ -110,6 +110,48 @@ export const getProfile = asyncHandler(async (req, res) => {
 
 });
 
+export const updateProfile = asyncHandler(async (req, res) => {
+  const { name, email } = req.body;
+
+  const user = await User.findById(req.user.id);
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  // Email duplicate check
+  if (email && email !== user.email) {
+    const existingUser = await User.findOne({
+      email: email.toLowerCase().trim(),
+      _id: { $ne: user._id },
+    });
+
+    if (existingUser) {
+      throw new ApiError(400, "Email already exists");
+    }
+
+    user.email = email.toLowerCase().trim();
+  }
+
+  if (name) {
+    user.name = name.trim();
+  }
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Profile updated successfully",
+    user: {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatar,
+      createdAt: user.createdAt,
+    },
+  });
+});
 
 export const forgotPassword = asyncHandler(async (req, res) => {
     const { email } = req.body;
