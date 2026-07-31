@@ -28,9 +28,16 @@ const userSchema = new mongoose.Schema(
     },
 
     avatar: {
-      type: String,
-      default: "",
+      public_id: {
+        type: String,
+        default: "",
+      },
+      url: {
+        type: String,
+        default: "",
+      },
     },
+
     resetPasswordToken: {
       type: String,
     },
