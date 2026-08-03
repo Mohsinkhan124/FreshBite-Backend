@@ -47,7 +47,8 @@ const productSchema = new mongoose.Schema(
         "piece",
         "dozen",
         "pack",
-        "box"
+        "box",
+        "bottle"
       ],
       default: "kg"
     },
