@@ -112,7 +112,7 @@ export const getProfile = asyncHandler(async (req, res) => {
 });
 
 export const updateProfile = asyncHandler(async (req, res) => {
-  const { name, email } = req.body;
+  const { name, email, phone, dateOfBirth, gender } = req.body;
 
   const user = await User.findById(req.user.id);
 
@@ -138,6 +138,18 @@ export const updateProfile = asyncHandler(async (req, res) => {
     user.name = name.trim();
   }
 
+  if (phone !== undefined) {
+    user.phone = phone.trim();
+  }
+
+  if (dateOfBirth !== undefined) {
+    user.dateOfBirth = dateOfBirth || null;
+  }
+
+  if (gender !== undefined) {
+    user.gender = gender;
+  }
+
   await user.save();
 
   res.status(200).json({
@@ -149,6 +161,9 @@ export const updateProfile = asyncHandler(async (req, res) => {
       email: user.email,
       role: user.role,
       avatar: user.avatar,
+      phone: user.phone,
+      dateOfBirth: user.dateOfBirth,
+      gender: user.gender,
       createdAt: user.createdAt,
     },
   });

@@ -38,6 +38,23 @@ const userSchema = new mongoose.Schema(
       },
     },
 
+    phone: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    dateOfBirth: {
+      type: Date,
+      default: null,
+    },
+
+    gender: {
+      type: String,
+      enum: ["male", "female", "other", ""],
+      default: "",
+    },
+
     resetPasswordToken: {
       type: String,
     },
