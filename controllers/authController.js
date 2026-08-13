@@ -8,30 +8,17 @@ import resetPasswordEmail from "../templates/resetPasswordEmail.js";
 import asyncHandler from "../middleware/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import cloudinary from "../services/cloudinary.js";
-import Address from "../models/Address.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
-  const {
-    name,
-    email,
-    password,
-    phone,
-    street,
-    city,
-    state,
-    postalCode,
-    country,
-  } = req.body;
+  const { name, email, password } = req.body;
 
-  // Check required user fields
+  // Check required fields
   if (!name || !email || !password) {
-    throw new ApiError(400, "Name, email and password are required");
+    throw new ApiError(400, "All fields are required");
   }
 
   // Check existing user
-  const existingUser = await User.findOne({
-    email: email.toLowerCase().trim(),
-  });
+  const existingUser = await User.findOne({ email });
 
   if (existingUser) {
     throw new ApiError(400, "Email already exists");
@@ -42,26 +29,10 @@ export const registerUser = asyncHandler(async (req, res) => {
 
   // Create user
   const user = await User.create({
-    name: name.trim(),
-    email: email.toLowerCase().trim(),
+    name,
+    email,
     password: hashedPassword,
-    phone: phone?.trim() || "",
   });
-
-  // Create address if address information was provided
-  if (street && city && state && postalCode) {
-    await Address.create({
-      user: user._id,
-      fullName: name.trim(),
-      phone: phone?.trim() || "",
-      street: street.trim(),
-      city: city.trim(),
-      state: state.trim(),
-      postalCode: postalCode.trim(),
-      country: country?.trim().toUpperCase() || "PAKISTAN",
-      isDefault: true,
-    });
-  }
 
   await sendEmail(
     user.email,
@@ -75,9 +46,6 @@ export const registerUser = asyncHandler(async (req, res) => {
     email: user.email,
     role: user.role,
     avatar: user.avatar,
-    phone: user.phone,
-    dateOfBirth: user.dateOfBirth,
-    gender: user.gender,
     createdAt: user.createdAt,
   };
 
