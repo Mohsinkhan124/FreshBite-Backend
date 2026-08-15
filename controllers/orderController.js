@@ -7,6 +7,7 @@ import User from "../models/User.js";
 import Coupon from "../models/Coupon.js";
 import { sendEmail } from "../services/emailService.js";
 import orderConfirmationEmail from "../templates/orderConfirmationEmail.js";
+import orderDeliveredEmail from "../templates/orderDeliveredEmail.js";
 import ApiError from "../utils/ApiError.js";
 
 // Create Order
@@ -297,6 +298,18 @@ export const updateOrderStatus = async (req, res) => {
     order.orderStatus = orderStatus;
 
     await order.save();
+
+    if (orderStatus === "Delivered") {
+  const user = await User.findById(order.user);
+
+  if (user) {
+    await sendEmail(
+      user.email,
+      "Your FreshBite Order Has Been Delivered 🎉",
+      orderDeliveredEmail(order)
+    );
+  }
+}
 
     res.status(200).json({
       success: true,
