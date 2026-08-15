@@ -28,6 +28,14 @@ export const addToCart = async (req, res) => {
 
       await cart.save();
 
+      await cart.populate({
+        path: "product",
+        populate: {
+          path: "category",
+          select: "name",
+        },
+      });
+
       return res.status(200).json({
         success: true,
         message: "Cart updated successfully",
@@ -41,6 +49,14 @@ export const addToCart = async (req, res) => {
       quantity,
       priceAtTime: productData.price,
       subtotal: productData.price * quantity,
+    });
+
+    await cart.populate({
+      path: "product",
+      populate: {
+        path: "category",
+        select: "name",
+      },
     });
 
     res.status(201).json({
@@ -92,15 +108,15 @@ export const getMyCart = async (req, res) => {
 export const updateCart = async (req, res) => {
   try {
     const { quantity } = req.body;
-const cart = await Cart.findById(req.params.id);
+    const cart = await Cart.findById(req.params.id);
 
-if (!cart) {
-  throw new ApiError(404, "Cart item not found");
-}
+    if (!cart) {
+      throw new ApiError(404, "Cart item not found");
+    }
 
-if (cart.user.toString() !== req.user.id) {
-  throw new ApiError(403, "Unauthorized Access");
-}
+    if (cart.user.toString() !== req.user.id) {
+      throw new ApiError(403, "Unauthorized Access");
+    }
 
     if (quantity < 1) {
       throw new ApiError(400, "Quantity must be at least 1");
@@ -110,6 +126,14 @@ if (cart.user.toString() !== req.user.id) {
     cart.subtotal = cart.priceAtTime * quantity;
 
     await cart.save();
+
+    await cart.populate({
+      path: "product",
+      populate: {
+        path: "category",
+        select: "name",
+      },
+    });
 
     res.status(200).json({
       success: true,
@@ -128,17 +152,17 @@ if (cart.user.toString() !== req.user.id) {
 // Remove From Cart
 export const removeFromCart = async (req, res) => {
   try {
-   const cart = await Cart.findById(req.params.id);
+    const cart = await Cart.findById(req.params.id);
 
-if (!cart) {
-  throw new ApiError(404, "Cart item not found");
-}
+    if (!cart) {
+      throw new ApiError(404, "Cart item not found");
+    }
 
-if (cart.user.toString() !== req.user.id) {
-  throw new ApiError(403, "Unauthorized Access");
-}
+    if (cart.user.toString() !== req.user.id) {
+      throw new ApiError(403, "Unauthorized Access");
+    }
 
-await cart.deleteOne();
+    await cart.deleteOne();
 
     res.status(200).json({
       success: true,
