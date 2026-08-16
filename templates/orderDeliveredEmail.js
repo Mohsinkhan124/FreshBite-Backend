@@ -17,7 +17,7 @@ const orderDeliveredEmail = (order) => {
 
         <td style="padding:12px;border-bottom:1px solid #eee;text-align:center;">
          <a
-  href="http://localhost:3000/products/${item.product}"
+  href="https://freshbite-shop.vercel.app/products/${item.product}"
   style="background:#16a34a;color:#fff;padding:10px 16px;text-decoration:none;border-radius:6px;display:inline-block;"
 >
   ⭐ Review

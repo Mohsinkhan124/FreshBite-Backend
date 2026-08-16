@@ -198,7 +198,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
 
   await user.save();
 
-  const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
+  const resetLink = `https://freshbite-shop.vercel.app/reset-password/${resetToken}`;
 
   await sendEmail(
     user.email,
