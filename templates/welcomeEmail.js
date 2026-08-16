@@ -39,7 +39,7 @@ Thank you for joining us.
 </p>
 
 <a
-href="https://freshbite-shop.vercel.app/"
+href="https://freshbite-shop.vercel.app"
 style="
 display:inline-block;
 padding:12px 25px;

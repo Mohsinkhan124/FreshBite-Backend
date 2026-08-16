@@ -37,9 +37,10 @@ const limiter = rateLimit({
 });
 
 app.use(cors({
-    origin: "https://freshbite-shop.vercel.app/",
+    origin: "https://freshbite-shop.vercel.app",
     methods: ["GET", "POST", "PUT","PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
 }));
 
 app.use(helmet());
